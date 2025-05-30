@@ -59,11 +59,13 @@ export class InventoryItem {
   updatedAt: Date;
 
   // Computed property for available stock
+
   get availableStock(): number {
     return this.currentStock - this.reservedStock;
   }
 
-  // Check if item is low stock
+  // Check if low stock
+
   get isLowStock(): boolean {
     return this.reorderPoint ? this.currentStock <= this.reorderPoint : false;
   }
