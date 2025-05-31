@@ -7,6 +7,12 @@ import { MedicalRecordService } from '../medical_record/medical_record.service';
 
 @Injectable()
 export class PetService {
+  findOne(id: string) {
+    throw new Error('Method not implemented.');
+  }
+  findAll(query: any) {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     @InjectRepository(Pet)
     private readonly petRepository: Repository<Pet>,
