@@ -14,7 +14,7 @@ PetChain Market is a professional veterinary services platform that provides a c
 - **Medical Records**: Digital medical record management for pets
 - **Emergency Services**: Emergency veterinary service coordination
 - **Telemedicine**: Remote veterinary consultation platform
-- **Shopping Cart**: Integrated e-commerce for veterinary products
+- **Shopping Cart**: Integrated e-commerce for veterinary product
 - **Staff Management**: Veterinary staff and clinic administration
 - **Customer Pet Portal**: Dedicated customer interface for pet management
 - **NestJS Framework**: Modern, scalable Node.js framework

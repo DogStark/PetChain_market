@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  postgres-backup:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=petchain
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - ./backups:/backups
+      - ./scripts:/scripts
+    command: |
+      bash -c "
+      while true; do
+        echo 'Creating backup...'
+        pg_dump -h postgres -U postgres petchain | gzip > /backups/petchain_$(date +%Y%m%d_%H%M%S).sql.gz
+        echo 'Backup completed'
+        sleep 86400  # Run daily
+      done
+      "
+    depends_on:
+      - postgres
+
+  backup-monitor:
+    build: .
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=petchain
+      - DB_USER=postgres
+      - DB_PASSWORD=${DB_PASSWORD}
+      - BACKUP_PATH=/app/backups
+    volumes:
+      - ./backups:/app/backups
+    command: npm run start:backup-monitor
+    depends_on:
+      - postgres
