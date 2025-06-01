@@ -12,6 +12,8 @@ import { StaffModule } from './veterinarian/staff/staff.module';
 import { EmergencyModule } from './emergency/emergency.module';
 import { TelemedicineModule } from './telemedicine/telemedicine.module';
 import { CustomerModule } from './customer-pet/customer-pet.module';
+import { AdminModule } from './admin/admin.module';
+
 
 @Module({
   imports: [
