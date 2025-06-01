@@ -1,26 +1,49 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from '../dto/create-auth.dto';
-import { UpdateAuthDto } from '../dto/update-auth.dto';
+import { Injectable, ConflictException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
+import { UserService } from '../../user/services/user.service';
+import { CreateUserDto } from '../../user/dto/create-user.dto';
+import { User } from '../../user/entities/user.entity';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
+  ) {}
+
+  async register(createUserDto: CreateUserDto): Promise<Partial<User>> {
+    const { email, password } = createUserDto;
+    const existingUser = await this.userService.findByEmail(email);
+    if (existingUser) {
+      throw new ConflictException('Email already registered');
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await this.userService.create({
+      ...createUserDto,
+      password: hashedPassword,
+    });
+
+    return { id: user.id, email: user.email, role: user.role };
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async validateUser(email: string, password: string): Promise<User | null> {
+    const user = await this.userService.findByEmail(email);
+    if (!user) return null;
+
+    const passwordValid = await bcrypt.compare(password, user.password);
+    if (!passwordValid) return null;
+
+    return user;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  async login(user: User): Promise<{ access_token: string }> {
+    const payload = { email: user.email, id: user.id, role: user.role };
+    return {
+      access_token: await this.jwtService.signAsync(payload, {
+        expiresIn: '1h',
+      }),
+    };
   }
 }
