@@ -1,1 +1,3 @@
-export class MedicalRecord {}
+export class MedicalRecord {
+  pet: any;
+}
