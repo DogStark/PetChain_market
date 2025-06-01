@@ -1,3 +1,4 @@
+
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Role } from '@/enums/role.enums';
 
@@ -5,7 +6,7 @@ import { Role } from '@/enums/role.enums';
 export class User {
   @PrimaryGeneratedColumn('uuid')
      id!: string;
-
+     pets: any;
   @Column()
      name!: string;
 
@@ -23,4 +24,5 @@ export class User {
 }
 
 export { Role };
+
 
