@@ -1,28 +1,42 @@
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
+  Unique,
+} from 'typeorm';
+import { UserRole } from '../../common/enums/roles.enum';
 
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { Role } from '@/enums/role.enums';
-
-@Entity()
+@Entity('users')
+@Unique(['email'])
 export class User {
-  @PrimaryGeneratedColumn('uuid')
-     id!: string;
-     pets: any;
-  @Column()
-     name!: string;
+  @PrimaryGeneratedColumn({ type: 'int' })
+  id!: number;
 
-  @Column({ unique: true })
-     email!: string;
+  @Column({ type: 'varchar', length: 255 })
+  email!: string;
 
-  @Column({ type: 'enum', enum: Role, default: Role.USER })
-     role!: Role;
+  @Column({
+    type: 'varchar',
+    enum: UserRole,
+    default: UserRole.USER,
+  })
+  role!: UserRole;
 
-  @CreateDateColumn()
-     createdAt!: Date;
+  @Column({ type: 'boolean', default: false })
+  isVerified!: boolean;
 
-  @UpdateDateColumn()
-     updatedAt!: Date;
+  @Column({ type: 'varchar', length: 255 })
+  password!: string;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt!: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt!: Date;
+
+  @DeleteDateColumn({ type: 'timestamp', nullable: true })
+  deletedAt?: Date;
 }
-
-export { Role };
-
-

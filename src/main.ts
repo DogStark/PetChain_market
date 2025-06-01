@@ -49,7 +49,7 @@ async function bootstrap(): Promise<void> {
   console.log(`Application is running on: http://localhost:${port}/api`);
 }
 
-bootstrap().catch((error) => {
+bootstrap().catch(error => {
   console.error('Error starting the application:', error);
   process.exit(1);
 });

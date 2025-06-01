@@ -1,26 +1,39 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { IsNull, Repository } from 'typeorm';
+import { User } from '../entities/user.entity';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
+
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userRepository.findOne({ where: { email } });
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    console.log(
+      'Creating user with DTO:',
+      JSON.stringify(createUserDto, null, 2),
+    );
+    const newUser = this.userRepository.create(createUserDto);
+    return this.userRepository.save(newUser);
   }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async update(id: number, user: Partial<User>): Promise<User | null> {
+    await this.userRepository.update(id, user);
+    return this.userRepository.findOne({ where: { id } });
   }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async delete(id: number): Promise<void> {
+    await this.userRepository.softDelete(id);
   }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async findAll(): Promise<User[]> {
+    return this.userRepository.find({ where: { deletedAt: IsNull() } });
+  }
+  async findOne(id: number): Promise<User | null> {
+    return this.userRepository.findOne({ where: { id } });
   }
 }

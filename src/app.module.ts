@@ -3,6 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { typeOrmConfig } from './config/typeorm.config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { PetModule } from './pet/pet.module';
 import { MedicalRecordModule } from './medical_record/medical_record.module';
 import { ShoppingCartModule } from './shopping_cart/shopping_cart.module';
@@ -14,7 +16,18 @@ import { AdminModule } from './admin/admin.module';
 
 
 @Module({
-  imports: [UserModule, AuthModule, PetModule, MedicalRecordModule, ShoppingCartModule, StaffModule, EmergencyModule, TelemedicineModule, CustomerModule, AdminModule, UsersModule],
+  imports: [
+    TypeOrmModule.forRoot(typeOrmConfig),
+    UserModule,
+    AuthModule,
+    PetModule,
+    MedicalRecordModule,
+    ShoppingCartModule,
+    StaffModule,
+    EmergencyModule,
+    TelemedicineModule,
+    CustomerModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
