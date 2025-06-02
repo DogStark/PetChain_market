@@ -19,6 +19,9 @@ import { StaffModule } from './veterinarian/staff/staff.module';
 import { EmergencyModule } from './emergency/emergency.module';
 import { TelemedicineModule } from './telemedicine/telemedicine.module';
 import { CustomerModule } from './customer-pet/customer-pet.module';
+import { ReviewModule } from './review/review.module';
+import { PetModule } from './pets/pet.module';
+import { MedicalRecordModule } from './pets/medical_record.module';
 import { AdminModule } from './admin/admin.module';
 import { PetModule } from './pet/pet.module';
 
@@ -35,6 +38,7 @@ import { PetModule } from './pet/pet.module';
     EmergencyModule,
     TelemedicineModule,
     CustomerModule,
+    ReviewModule,
     MedicalModule,
     PhotoModule,
     ActivityModule,
