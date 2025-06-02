@@ -6,6 +6,9 @@ import { AuthModule } from './auth/auth.module';
 import { typeOrmConfig } from './config/typeorm.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PetModule } from './pet/pet.module';
+import { ActivityModule } from './activity/activity.module';
+import { PhotoModule } from './photo/photo.module';
+import { MedicalModule } from './medical/medical.module';
 import { MedicalRecordModule } from './medical_record/medical_record.module';
 import { ShoppingCartModule } from './shopping_cart/shopping_cart.module';
 import { StaffModule } from './veterinarian/staff/staff.module';
@@ -13,6 +16,7 @@ import { EmergencyModule } from './emergency/emergency.module';
 import { TelemedicineModule } from './telemedicine/telemedicine.module';
 import { CustomerModule } from './customer-pet/customer-pet.module';
 import { AdminModule } from './admin/admin.module';
+import { PetModule } from './pet/pet.module';
 
 
 @Module({
@@ -27,6 +31,9 @@ import { AdminModule } from './admin/admin.module';
     EmergencyModule,
     TelemedicineModule,
     CustomerModule,
+    MedicalModule,
+    PhotoModule,
+    ActivityModule,
   ],
   controllers: [AppController],
   providers: [AppService],
