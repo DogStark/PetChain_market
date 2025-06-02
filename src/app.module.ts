@@ -13,6 +13,7 @@ import { CustomerModule } from './customer-pet/customer-pet.module';
 import { ReviewModule } from './review/review.module';
 import { PetModule } from './pets/pet.module';
 import { MedicalRecordModule } from './pets/medical_record.module';
+import { LoyaltyModule } from './loyalty/loyalty.module';
 
 
 @Module({
@@ -28,6 +29,7 @@ import { MedicalRecordModule } from './pets/medical_record.module';
     TelemedicineModule,
     CustomerModule,
     ReviewModule,
+    LoyaltyModule,
   ],
   controllers: [AppController],
   providers: [AppService],
