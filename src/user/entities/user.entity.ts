@@ -6,8 +6,10 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   Unique,
+  OneToMany,
 } from 'typeorm';
 import { UserRole } from '../../common/enums/roles.enum';
+import { Review } from '@/review/entities/review.entity';
 
 @Entity('users')
 @Unique(['email'])
@@ -36,6 +38,9 @@ export class User {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt!: Date;
+
+  @OneToMany(() => Review, (review) => review.user, { eager: true })
+  reviews!: User;
 
   @DeleteDateColumn({ type: 'timestamp', nullable: true })
   deletedAt?: Date;
