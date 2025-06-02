@@ -22,8 +22,8 @@ import { CustomerModule } from './customer-pet/customer-pet.module';
 import { ReviewModule } from './review/review.module';
 import { PetModule } from './pets/pet.module';
 import { MedicalRecordModule } from './pets/medical_record.module';
+import { LoyaltyModule } from './loyalty/loyalty.module';
 import { AdminModule } from './admin/admin.module';
-import { PetModule } from './pet/pet.module';
 
 
 @Module({
@@ -39,6 +39,7 @@ import { PetModule } from './pet/pet.module';
     TelemedicineModule,
     CustomerModule,
     ReviewModule,
+    LoyaltyModule,
     MedicalModule,
     PhotoModule,
     ActivityModule,
