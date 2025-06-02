@@ -13,17 +13,18 @@ import { EmergencyBookingModule } from './emergency-booking/emergency-booking.mo
 import { ActivityModule } from './activity/activity.module';
 import { PhotoModule } from './photo/photo.module';
 import { MedicalModule } from './medical/medical.module';
-import { MedicalRecordModule } from './medical_record/medical_record.module';
+import { MedicalRecordModule } from './pets/medical_record.module';
+import { OrderModule } from './order/order.module';
 import { ShoppingCartModule } from './shopping_cart/shopping_cart.module';
 import { StaffModule } from './veterinarian/staff/staff.module';
 import { EmergencyModule } from './emergency/emergency.module';
 import { TelemedicineModule } from './telemedicine/telemedicine.module';
 import { CustomerModule } from './customer-pet/customer-pet.module';
 import { ReviewModule } from './review/review.module';
-import { PetModule } from './pets/pet.module';
-import { MedicalRecordModule } from './pets/medical_record.module';
+
+
 import { LoyaltyModule } from './loyalty/loyalty.module';
-import { AdminModule } from './admin/admin.module';
+
 
 
 @Module({
@@ -40,6 +41,7 @@ import { AdminModule } from './admin/admin.module';
     CustomerModule,
     ReviewModule,
     LoyaltyModule,
+    OrderModule,
     MedicalModule,
     PhotoModule,
     ActivityModule,
