@@ -28,6 +28,10 @@ import { GroomingModule } from './grooming/grooming.module';
 
 
 
+import { SubscriptionModule } from './subscription/subscription.module';
+import { PaymentModule } from './payment/payment.module';
+
+
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig),
@@ -51,6 +55,8 @@ import { GroomingModule } from './grooming/grooming.module';
     PricingModule,
     NotificationModule,
     GroomingModule,
+    SubscriptionModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
