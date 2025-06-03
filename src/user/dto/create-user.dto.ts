@@ -6,10 +6,13 @@ import {
   IsEnum,
   Matches,
 } from 'class-validator';
+import { Trim, Escape } from 'class-sanitizer';
 import { UserRole } from '../../common/enums/roles.enum';
 
 export class CreateUserDto {
   @IsEmail()
+  @Trim()
+  @Escape()
   email!: string;
 
   @IsString()
