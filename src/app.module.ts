@@ -22,11 +22,13 @@ import { TelemedicineModule } from './telemedicine/telemedicine.module';
 import { CustomerModule } from './customer-pet/customer-pet.module';
 import { ReviewModule } from './review/review.module';
 
-
 import { LoyaltyModule } from './loyalty/loyalty.module';
 import { GroomingModule } from './grooming/grooming.module';
 
-
+import { HealthModule } from './health/health.module';
+import { MetricsModule } from './metrics/metrics.module';
+import { LoggerModule } from './logger/logger.module';
+import { SentryModule } from './sentry/sentry.module';
 
 @Module({
   imports: [
@@ -51,6 +53,10 @@ import { GroomingModule } from './grooming/grooming.module';
     PricingModule,
     NotificationModule,
     GroomingModule,
+    LoggerModule,
+    MetricsModule,
+    HealthModule,
+    SentryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
