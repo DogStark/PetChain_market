@@ -24,6 +24,7 @@ import { ReviewModule } from './review/review.module';
 
 
 import { LoyaltyModule } from './loyalty/loyalty.module';
+import { GroomingModule } from './grooming/grooming.module';
 
 
 
@@ -49,6 +50,7 @@ import { LoyaltyModule } from './loyalty/loyalty.module';
     TriageModule,
     PricingModule,
     NotificationModule,
+    GroomingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
