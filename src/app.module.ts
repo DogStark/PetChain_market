@@ -18,6 +18,7 @@ import { ReviewModule } from './review/review.module';
 import { LoyaltyModule } from './loyalty/loyalty.module';
 import { MedicalModule } from './medical/medical.module';
 import { PhotoModule } from './photo/photo.module';
+import { PrescriptionModule } from './prescription/prescription.module';
 import { ActivityModule } from './activity/activity.module';
 import { EmergencyBookingModule } from './emergency-booking/emergency-booking.module';
 import { TriageModule } from './triage/triage.module';
@@ -75,7 +76,7 @@ import { PaymentModule } from './payment/payment.module';
     HealthModule,
     SentryModule,
     InsuranceModule, 
-
+    PrescriptionModule,
   ],
   controllers: [AppController],
   providers: [
