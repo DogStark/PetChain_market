@@ -36,6 +36,10 @@ import { MetricsModule } from './metrics/metrics.module';
 import { LoggerModule } from './logger/logger.module';
 import { SentryModule } from './sentry/sentry.module';
 
+import { SubscriptionModule } from './subscription/subscription.module';
+import { PaymentModule } from './payment/payment.module';
+
+
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig),
@@ -66,6 +70,8 @@ import { SentryModule } from './sentry/sentry.module';
     PetsMedicalRecordModule,
     AdminModule,
     GroomingModule,
+    SubscriptionModule,
+    PaymentModule,
     LoggerModule,
     MetricsModule,
     HealthModule,
