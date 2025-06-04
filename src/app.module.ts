@@ -31,7 +31,10 @@ import { MedicalRecordModule as PetsMedicalRecordModule } from './medical_record
 import { AdminModule } from './admin/admin.module';
 import { GroomingModule } from './grooming/grooming.module';
 
-
+import { HealthModule } from './health/health.module';
+import { MetricsModule } from './metrics/metrics.module';
+import { LoggerModule } from './logger/logger.module';
+import { SentryModule } from './sentry/sentry.module';
 
 @Module({
   imports: [
@@ -63,6 +66,10 @@ import { GroomingModule } from './grooming/grooming.module';
     PetsMedicalRecordModule,
     AdminModule,
     GroomingModule,
+    LoggerModule,
+    MetricsModule,
+    HealthModule,
+    SentryModule,
   ],
   controllers: [AppController],
   providers: [

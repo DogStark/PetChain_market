@@ -40,7 +40,12 @@
     "@nestjs/terminus": "^11.0.0",
     "@nestjs/throttler": "^6.4.0",
     "@nestjs/typeorm": "^11.0.0",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/sdk-node": "^0.202.0",
+    "@sentry/node": "^9.25.1",
+    "@sentry/tracing": "^7.120.3",
     "@types/helmet": "^0.0.48",
+    "@willsoto/nestjs-prometheus": "^6.0.2",
     "bcrypt": "^6.0.0",
     "cache-manager": "^6.4.3",
     "cache-manager-redis-store": "^3.0.1",
@@ -53,6 +58,7 @@
     "helmet": "^8.1.0",
     "hpp": "^0.2.3",
     "jsonwebtoken": "^9.0.2",
+    "nest-winston": "^1.10.2",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "pg": "^8.16.0",
@@ -60,7 +66,10 @@
     "rxjs": "^7.8.1",
     "sharp": "^0.34.2",
     "swagger-ui-express": "^5.0.1",
-    "typeorm": "^0.3.24"
+    "typeorm": "^0.3.24",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0",
+    "winston-logstash": "^1.2.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
