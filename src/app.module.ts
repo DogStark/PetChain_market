@@ -29,6 +29,9 @@ import { OrderModule } from './order/order.module';
 import { PetModule as PetsModule } from './pets/pet.module';
 import { MedicalRecordModule as PetsMedicalRecordModule } from './medical_record/medical_record.module';
 import { AdminModule } from './admin/admin.module';
+import { GroomingModule } from './grooming/grooming.module';
+
+
 
 @Module({
   imports: [
@@ -59,6 +62,7 @@ import { AdminModule } from './admin/admin.module';
     PetsModule,
     PetsMedicalRecordModule,
     AdminModule,
+    GroomingModule,
   ],
   controllers: [AppController],
   providers: [
