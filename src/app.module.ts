@@ -29,6 +29,7 @@ import { PetModule as PetsModule } from './pets/pet.module';
 import { MedicalRecordModule as PetsMedicalRecordModule } from './medical_record/medical_record.module';
 import { AdminModule } from './admin/admin.module';
 import { GroomingModule } from './grooming/grooming.module';
+import { SchedulingModule } from './scheduling/scheduling.module';
 
 import { HealthModule } from './health/health.module';
 import { MetricsModule } from './metrics/metrics.module';
@@ -69,6 +70,7 @@ import { PaymentModule } from './payment/payment.module';
     PetsMedicalRecordModule,
     AdminModule,
     GroomingModule,
+    SchedulingModule,
     SubscriptionModule,
     PaymentModule,
     LoggerModule,
