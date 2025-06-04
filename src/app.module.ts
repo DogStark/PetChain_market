@@ -5,9 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './config/typeorm.config';
-
-
-import { UserModule } from './user/user.module';
+import { InsuranceModule } from './insurance/insurance.module'; 
 import { AuthModule } from './auth/auth.module';
 import { PetModule } from './pet/pet.module';
 import { MedicalRecordModule } from './pets/medical_record.module';
@@ -77,6 +75,7 @@ import { PaymentModule } from './payment/payment.module';
     MetricsModule,
     HealthModule,
     SentryModule,
+    InsuranceModule, 
     PrescriptionModule,
   ],
   controllers: [AppController],
