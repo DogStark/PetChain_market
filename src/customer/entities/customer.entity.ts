@@ -6,48 +6,48 @@ import { Payment } from '../../payment/entities/payment.entity';
 @Entity()
 export class Customer {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  firstName: string;
+  firstName!: string;
 
   @Column()
-  lastName: string;
+  lastName!: string;
 
   @Column({ unique: true })
-  email: string;
+  email!: string;
 
   @Column({ select: false })
-  password: string;
+  password!: string;
 
   @Column({ nullable: true })
-  phone: string;
+  phone!: string;
 
   @Column({ type: 'json', nullable: true })
-  billingAddress: Record<string, any>;
+  billingAddress!: Record<string, any>;
 
   @Column({ type: 'json', nullable: true })
-  shippingAddress: Record<string, any>;
+  shippingAddress!: Record<string, any>;
 
   @Column({ default: true })
-  isActive: boolean;
+  isActive!: boolean;
 
   @OneToMany(() => Subscription, subscription => subscription.customer)
-  subscriptions: Subscription[];
+  subscriptions!: Subscription[];
 
   @OneToMany(() => Order, order => order.customer)
-  orders: Order[];
+  orders!: Order[];
 
   @OneToMany(() => Payment, payment => payment.customer)
-  payments: Payment[];
+  payments!: Payment[];
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date;
+  createdAt!: Date;
 
   @Column({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
     onUpdate: 'CURRENT_TIMESTAMP',
   })
-  updatedAt: Date;
+  updatedAt!: Date;
 }

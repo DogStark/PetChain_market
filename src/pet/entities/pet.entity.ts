@@ -1,4 +1,4 @@
-import { Activity } from '@/activity/entities/activity.entity';
+import { Activity } from '../../boarding/entities/activity.entity';
 import { Photo } from '@/boarding/entities/photo.entity';
 import { MedicalHistory } from '@/medical/entities/medical.entity';
 import { Prescription } from '@/prescription/entities/prescription.entity';
@@ -69,7 +69,7 @@ export class Pet {
 
   @OneToMany(() => Activity, activity => activity.pet)
   activities: Activity[];
-  
+
   @OneToMany(() => Prescription, prescription => prescription.pet)
   prescriptions: Prescription[];
 

@@ -6,5 +6,5 @@ export class ConfigEntity {
   key!: string;
 
   @Column({ default: false })
-     maintenanceMode: boolean = false;
+  maintenanceMode: boolean = false;
 }

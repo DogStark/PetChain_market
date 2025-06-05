@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, OneToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Category } from '../../category/entities/category.entity';
 import { ProductVariant } from './product-variant.entity';
 import { ProductImage } from './product-image.entity';
@@ -25,7 +33,9 @@ export class Product {
   @JoinColumn({ name: 'category_id' })
   category: Category;
 
-  @OneToMany(() => ProductVariant, variant => variant.product, { cascade: true })
+  @OneToMany(() => ProductVariant, variant => variant.product, {
+    cascade: true,
+  })
   variants: ProductVariant[];
 
   @OneToMany(() => ProductImage, image => image.product, { cascade: true })
@@ -40,6 +50,10 @@ export class Product {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   updatedAt: Date;
 }

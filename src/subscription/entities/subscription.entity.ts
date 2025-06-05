@@ -3,63 +3,68 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
+  OneToMany,
   JoinColumn,
 } from 'typeorm';
-import { Customer } from '../../customer/entities/customer.entity';
+import { Customer } from '../../customer-pet/entities/customer-pet.entity';
+import { Payment } from '../../payment/entities/payment.entity';
 import { SubscriptionPlan } from './subscription-plan.entity';
 import { SubscriptionStatus } from '../../shared/common/enums/subscription-status.enum';
 
 @Entity()
 export class Subscription {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id?: string;
 
   @ManyToOne(() => Customer, customer => customer.subscriptions)
   @JoinColumn()
-  customer: Customer;
+  customer!: Customer;
 
   @ManyToOne(() => SubscriptionPlan, plan => plan.subscriptions)
   @JoinColumn()
-  plan: SubscriptionPlan;
+  plan!: SubscriptionPlan;
 
   @Column({
     type: 'enum',
     enum: SubscriptionStatus,
     default: SubscriptionStatus.ACTIVE,
   })
-  status: SubscriptionStatus;
+  status!: SubscriptionStatus;
 
   @Column({ type: 'date' })
-  startDate: Date;
+  startDate!: Date;
 
   @Column({ type: 'date', nullable: true })
-  endDate: Date | null;
+  endDate!: Date | null;
 
   @Column()
-  billingDay: number;
+  billingDay!: number;
 
   @Column({ type: 'json', nullable: true })
-  customizations: Record<string, any>;
+  customizations!: Record<string, any>;
 
   @Column({ type: 'date', nullable: true })
-  nextBillingDate: Date | null;
+  nextBillingDate!: Date | null;
 
   @Column({ type: 'date', nullable: true })
-  lastPaymentDate: Date | null;
+  lastPaymentDate!: Date | null;
 
   @Column({ nullable: true })
-  paymentFailureCount: number;
+  paymentFailureCount!: number;
 
   @Column({ type: 'text', nullable: true })
-  lastPaymentError: string;
+  lastPaymentError!: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date;
+  createdAt!: Date;
+
+  @OneToMany(() => Payment, payment => payment.subscription)
+  payments!: Payment[];
 
   @Column({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
     onUpdate: 'CURRENT_TIMESTAMP',
   })
-  updatedAt: Date;
+  updatedAt!: Date;
 }
