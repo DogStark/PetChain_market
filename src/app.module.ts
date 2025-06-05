@@ -38,6 +38,8 @@ import { SentryModule } from './sentry/sentry.module';
 
 import { SubscriptionModule } from './subscription/subscription.module';
 import { PaymentModule } from './payment/payment.module';
+import { LocationModule } from './location/location.module';
+import { AppointmentModule } from './appointment/appointment.module';
 
 
 @Module({
@@ -78,7 +80,7 @@ import { PaymentModule } from './payment/payment.module';
     HealthModule,
     SentryModule,
     InsuranceModule, 
-    PrescriptionModule,
+    PrescriptionModule, LocationModule, AppointmentModule,
   ],
   controllers: [AppController],
   providers: [
