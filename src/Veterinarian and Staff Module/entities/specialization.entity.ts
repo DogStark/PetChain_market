@@ -4,20 +4,24 @@ import { Veterinarian } from './veterinarian.entity';
 @Entity('specializations')
 export class Specialization {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ unique: true })
-  name: string;
+  name!: string;
 
   @Column({ type: 'text', nullable: true })
-  description: string;
+  description!: string;
 
-  @ManyToMany(() => Veterinarian, (vet) => vet.specializations)
-  veterinarians: Veterinarian[];
+  @ManyToMany(() => Veterinarian, vet => vet.specializations)
+  veterinarians!: Veterinarian[];
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date;
+  createdAt!: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
-  updatedAt: Date;
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
+  updatedAt!: Date;
 }

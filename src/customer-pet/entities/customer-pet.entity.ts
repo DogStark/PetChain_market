@@ -1,102 +1,119 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm"
-import { Address } from "./address.entity"
-import { Pet } from "./pet.entity"
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from 'typeorm';
+import { Address } from './address.entity';
+import { Pet } from './pet.entity';
+import { LoyaltyPoint } from '@/loyalty/entities/loyalty.entity';
+import { Payment } from '@/payment/entities/payment.entity';
+import { Subscription } from '@/subscription/entities/subscription.entity';
+import { Order } from '@/order/entities/order.entity';
 
 export enum CustomerStatus {
-  ACTIVE = "ACTIVE",
-  INACTIVE = "INACTIVE",
-  SUSPENDED = "SUSPENDED",
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  SUSPENDED = 'SUSPENDED',
 }
 
 export enum CustomerType {
-  INDIVIDUAL = "INDIVIDUAL",
-  BUSINESS = "BUSINESS",
+  INDIVIDUAL = 'INDIVIDUAL',
+  BUSINESS = 'BUSINESS',
 }
 
-@Entity("customers")
+@Entity('customers')
 export class Customer {
-  @PrimaryGeneratedColumn("uuid")
-  id!: string
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
   @Column({ length: 100 })
-  firstName!: string
+  firstName!: string;
 
   @Column({ length: 100 })
-  lastName!: string
+  lastName!: string;
 
   @Column({ unique: true, length: 255 })
-  email!: string
+  email!: string;
 
   @Column({ length: 20, nullable: true })
-  phoneNumber!: string
+  phoneNumber!: string;
 
-  @Column({ type: "date", nullable: true })
-  dateOfBirth!: Date
+  @Column({ type: 'date', nullable: true })
+  dateOfBirth!: Date;
 
   @Column({
-    type: "enum",
+    type: 'enum',
     enum: CustomerType,
     default: CustomerType.INDIVIDUAL,
   })
-  customerType!: CustomerType
+  customerType!: CustomerType;
 
   @Column({
-    type: "enum",
+    type: 'enum',
     enum: CustomerStatus,
     default: CustomerStatus.ACTIVE,
   })
-  status!: CustomerStatus
+  status!: CustomerStatus;
 
   @Column({ length: 500, nullable: true })
-  notes!: string
+  notes!: string;
 
   @Column({ default: false })
-  isEmailVerified!: boolean
+  isEmailVerified!: boolean;
 
   @Column({ default: false })
-  isPhoneVerified!: boolean
+  isPhoneVerified!: boolean;
 
-  @Column({ type: "timestamp", nullable: true })
-  lastLoginAt!: Date
+  @Column({ type: 'timestamp', nullable: true })
+  lastLoginAt!: Date;
 
   @Column({ length: 255, nullable: true })
-  emergencyContactName!: string
+  emergencyContactName!: string;
 
   @Column({ length: 20, nullable: true })
-  emergencyContactPhone!: string
+  emergencyContactPhone!: string;
 
   @Column({ length: 100, nullable: true })
-  emergencyContactRelation!: string
+  emergencyContactRelation!: string;
 
-// Relationships
-@OneToMany(
-  () => Pet,
-  (pet) => pet.customer,
-)
-pets!: Pet[]
+  // Relationships
+  @OneToMany(() => Pet, pet => pet.customer)
+  pets!: Pet[];
 
-  @OneToMany(
-    () => Address,
-    (address) => address.customer,
-  )
-  addresses!: Address[]
+  @OneToMany(() => Address, address => address.customer)
+  addresses!: Address[];
+
+  @OneToMany(() => LoyaltyPoint, loyaltyPoint => loyaltyPoint.customer)
+  loyaltyPoints: LoyaltyPoint[];
+
+  @OneToMany(() => Payment, payment => payment.customer)
+  payments: Payment[];
+
+  @OneToMany(() => Subscription, subscription => subscription.customer)
+  subscriptions: Subscription[];
+
+  @OneToMany(() => Order, order => order.customer)
+  orders: Order[];
 
   @CreateDateColumn()
-  createdAt!: Date
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt!: Date
+  updatedAt!: Date;
 
   // Computed properties
   get fullName(): string {
-    return `${this.firstName} ${this.lastName}`
+    return `${this.firstName} ${this.lastName}`;
   }
 
   get primaryAddress(): Address | undefined {
-    return this.addresses?.find((addr) => addr.isPrimary)
+    return this.addresses?.find(addr => addr.isPrimary);
   }
 
   get activePetsCount(): number {
-    return this.pets?.filter((pet) => pet.isActive).length || 0
+    return this.pets?.filter(pet => pet.isActive).length || 0;
   }
 }

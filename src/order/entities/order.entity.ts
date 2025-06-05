@@ -1,4 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+  ManyToOne,
+} from 'typeorm';
+import { Customer } from '../../customer-pet/entities/customer-pet.entity';
+import { Payment } from '../../payment/entities/payment.entity';
 
 @Entity()
 export class Order {
@@ -20,8 +30,14 @@ export class Order {
   @Column({ nullable: true })
   paymentId?: string;
 
+  @OneToMany(() => Payment, payment => payment.order)
+  payments!: Payment[];
+
   @Column({ nullable: true })
   paymentStatus?: string;
+
+  @ManyToOne(() => Customer, customer => customer.orders)
+  customer!: Customer;
 
   @CreateDateColumn()
   createdAt!: Date;
