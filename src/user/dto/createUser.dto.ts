@@ -11,6 +11,7 @@ import { UserRole } from '../../common/enums/roles.enum';
 
 export class CreateUserDto {
   @IsEmail()
+  @IsNotEmpty({ message: 'Email must not be empty.' })
   @Trim()
   @Escape()
   email!: string;
