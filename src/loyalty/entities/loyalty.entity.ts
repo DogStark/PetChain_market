@@ -1,12 +1,12 @@
-import { Customer } from "@/customer/pet/entities/pet.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Customer } from '../../customer-pet/entities/customer-pet.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class LoyaltyPoint {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => Customer, (customer) => customer.loyaltyPoints)
+  @ManyToOne(() => Customer, customer => customer.loyaltyPoints)
   customer!: Customer;
 
   @Column()

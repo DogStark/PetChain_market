@@ -1,52 +1,64 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Veterinarian } from './veterinarian.entity';
 
 export enum CredentialType {
   LICENSE = 'license',
   CERTIFICATION = 'certification',
   DEGREE = 'degree',
-  CONTINUING_EDUCATION = 'continuing_education'
+  CONTINUING_EDUCATION = 'continuing_education',
 }
 
 @Entity('credentials')
 export class Credential {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column({ type: 'enum', enum: CredentialType })
-  type: CredentialType;
+  type!: CredentialType;
 
   @Column()
-  issuingAuthority: string;
+  issuingAuthority!: string;
 
   @Column({ unique: true })
-  licenseNumber: string;
+  licenseNumber!: string;
 
   @Column({ type: 'date' })
-  issueDate: Date;
+  issueDate!: Date;
 
   @Column({ type: 'date' })
-  expirationDate: Date;
+  expirationDate!: Date;
 
   @Column({ default: true })
-  isActive: boolean;
+  isActive!: boolean;
 
   @Column({ type: 'text', nullable: true })
-  notes: string;
+  notes!: string;
 
-  @ManyToOne(() => Veterinarian, (vet) => vet.credentials, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Veterinarian, vet => vet.credentials, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'veterinarianId' })
-  veterinarian: Veterinarian;
+  veterinarian!: Veterinarian;
 
   @Column()
-  veterinarianId: number;
+  veterinarianId!: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date;
+  createdAt!: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
-  updatedAt: Date;
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
+  updatedAt!: Date;
 }

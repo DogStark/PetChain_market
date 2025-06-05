@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { AvailabilitySchedule } from '../../Veterinarian and Staff Module/entities/availability-schedule.entity';
 
 export enum TimeSlotStatus {
@@ -6,42 +12,50 @@ export enum TimeSlotStatus {
   BOOKED = 'booked',
   BLOCKED = 'blocked',
   BREAK = 'break',
-  HOLIDAY = 'holiday'
+  HOLIDAY = 'holiday',
 }
 
 @Entity('time_slots')
 export class TimeSlot {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ type: 'timestamp' })
-  startTime: Date;
+  startTime!: Date;
 
   @Column({ type: 'timestamp' })
-  endTime: Date;
+  endTime!: Date;
 
-  @Column({ type: 'enum', enum: TimeSlotStatus, default: TimeSlotStatus.AVAILABLE })
-  status: TimeSlotStatus;
+  @Column({
+    type: 'enum',
+    enum: TimeSlotStatus,
+    default: TimeSlotStatus.AVAILABLE,
+  })
+  status!: TimeSlotStatus;
 
   @Column({ default: true })
-  isActive: boolean;
+  isActive!: boolean;
 
   @Column({ nullable: true })
-  appointmentId: string;
+  appointmentId!: string;
 
   @Column({ type: 'simple-json', nullable: true })
-  metadata: Record<string, any>;
+  metadata!: Record<string, any>;
 
   @ManyToOne(() => AvailabilitySchedule, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'availabilityScheduleId' })
-  availabilitySchedule: AvailabilitySchedule;
+  availabilitySchedule!: AvailabilitySchedule;
 
   @Column()
-  availabilityScheduleId: number;
+  availabilityScheduleId!: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date;
+  createdAt!: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
-  updatedAt: Date;
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
+  updatedAt!: Date;
 }

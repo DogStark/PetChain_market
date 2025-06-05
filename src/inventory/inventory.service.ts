@@ -1,14 +1,28 @@
-import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  Logger,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource, QueryRunner } from 'typeorm';
 import { InventoryItem } from './entities/inventory-item.entity';
 import { StockMovement, MovementType } from './entities/stock-movement.entity';
-import { StockAlert, AlertType, AlertStatus } from './entities/stock-alert.entity';
+import {
+  StockAlert,
+  AlertType,
+  AlertStatus,
+} from './entities/stock-alert.entity';
 import { CreateInventoryItemDto } from './dto/create-inventory-item.dto';
 import { UpdateInventoryItemDto } from './dto/update-inventory-item.dto';
 import { StockAdjustmentDto } from './dto/stock-adjustment.dto';
 import { InventoryFilterDto } from './dto/inventory-filter.dto';
 import { StockMovementFilterDto } from './dto/stock-movement-filter.dto';
+import { Inventory } from './entities/inventory.entity';
+import {
+  UpdateInventoryDto,
+  InventoryAdjustmentDto,
+} from './dto/update-inventory.dto';
 
 @Injectable()
 export class InventoryService {
@@ -22,21 +36,125 @@ export class InventoryService {
     @InjectRepository(StockAlert)
     private stockAlertRepository: Repository<StockAlert>,
     private dataSource: DataSource,
+    @InjectRepository(Inventory)
+    private inventoryRepository: Repository<Inventory>,
   ) {}
 
   // CRUD Operations for Inventory Items
+  async findByProductId(productId: string): Promise<Inventory> {
+    const inventory = await this.inventoryRepository.findOne({
+      where: { productId },
+      relations: ['product'],
+    });
 
-  async create(createInventoryItemDto: CreateInventoryItemDto): Promise<InventoryItem> {
+    if (!inventory) {
+      throw new NotFoundException(
+        `Inventory for product ${productId} not found`,
+      );
+    }
+
+    return inventory;
+  }
+
+  async updateInventory(
+    productId: string,
+    updateDto: UpdateInventoryDto,
+  ): Promise<Inventory> {
+    const inventory = await this.findByProductId(productId);
+
+    Object.assign(inventory, updateDto);
+    return this.inventoryRepository.save(inventory);
+  }
+
+  async adjustStock(
+    productId: string,
+    adjustmentDto: InventoryAdjustmentDto,
+  ): Promise<Inventory> {
+    const inventory = await this.findByProductId(productId);
+
+    const newQuantity = inventory.quantity + adjustmentDto.adjustment;
+
+    if (newQuantity < 0) {
+      throw new BadRequestException('Insufficient stock for adjustment');
+    }
+
+    inventory.quantity = newQuantity;
+    return this.inventoryRepository.save(inventory);
+  }
+
+  async reserveStock(productId: string, quantity: number): Promise<Inventory> {
+    const inventory = await this.findByProductId(productId);
+
+    if (inventory.availableQuantity < quantity) {
+      throw new BadRequestException('Insufficient available stock');
+    }
+
+    inventory.reserved += quantity;
+    return this.inventoryRepository.save(inventory);
+  }
+
+  async releaseStock(productId: string, quantity: number): Promise<Inventory> {
+    const inventory = await this.findByProductId(productId);
+
+    if (inventory.reserved < quantity) {
+      throw new BadRequestException('Cannot release more stock than reserved');
+    }
+
+    inventory.reserved -= quantity;
+    return this.inventoryRepository.save(inventory);
+  }
+
+  async getLowStockItems(): Promise<Inventory[]> {
+    return this.inventoryRepository
+      .createQueryBuilder('inventory')
+      .leftJoinAndSelect('inventory.product', 'product')
+      .where('inventory.trackInventory = true')
+      .andWhere(
+        '(inventory.quantity - inventory.reserved) <= inventory.lowStockThreshold',
+      )
+      .andWhere('product.isActive = true')
+      .getMany();
+  }
+
+  async getOutOfStockItems(): Promise<Inventory[]> {
+    return this.inventoryRepository
+      .createQueryBuilder('inventory')
+      .leftJoinAndSelect('inventory.product', 'product')
+      .where('inventory.trackInventory = true')
+      .andWhere('(inventory.quantity - inventory.reserved) <= 0')
+      .andWhere('product.isActive = true')
+      .getMany();
+  }
+
+  async createInventory(productId: string): Promise<Inventory> {
+    const inventory = this.inventoryRepository.create({
+      productId,
+      quantity: 0,
+      reserved: 0,
+      lowStockThreshold: 5,
+      trackInventory: true,
+    });
+
+    return this.inventoryRepository.save(inventory);
+  }
+
+  async create(
+    createInventoryItemDto: CreateInventoryItemDto,
+  ): Promise<InventoryItem> {
     try {
       const existingItem = await this.inventoryRepository.findOne({
-        where: { sku: createInventoryItemDto.sku }
+        where: { sku: createInventoryItemDto.sku },
       });
 
       if (existingItem) {
-        throw new BadRequestException(`Item with SKU ${createInventoryItemDto.sku} already exists`);
+        throw new BadRequestException(
+          `Item with SKU ${createInventoryItemDto.sku} already exists`,
+        );
       }
 
-      const inventoryItem = this.inventoryRepository.create(createInventoryItemDto);
+      const inventoryItem = this.inventoryRepository.create(
+        createInventoryItemDto,
+      );
       const savedItem = await this.inventoryRepository.save(inventoryItem);
 
       // Create initial stock movement if is stock greater than zero
@@ -46,7 +164,7 @@ export class InventoryService {
           inventoryItemId: savedItem.id,
           movementType: MovementType.ADJUSTMENT,
           quantity: createInventoryItemDto.currentStock,
-          notes: 'Initial stock entry'
+          notes: 'Initial stock entry',
         });
       }
 
@@ -56,7 +174,7 @@ export class InventoryService {
         await this.createStockAlert({
           inventoryItemId: savedItem.id,
           alertType: AlertType.LOW_STOCK,
-          thresholdValue: createInventoryItemDto.reorderPoint
+          thresholdValue: createInventoryItemDto.reorderPoint,
         });
       }
 
@@ -67,7 +185,9 @@ export class InventoryService {
     }
   }
 
-  async findAll(filterDto: InventoryFilterDto): Promise<{ items: InventoryItem[], total: number }> {
+  async findAll(
+    filterDto: InventoryFilterDto,
+  ): Promise<{ items: InventoryItem[]; total: number }> {
     const queryBuilder = this.inventoryRepository.createQueryBuilder('item');
 
     // filters
@@ -75,16 +195,20 @@ export class InventoryService {
     if (filterDto.search) {
       queryBuilder.where(
         '(item.name ILIKE :search OR item.sku ILIKE :search OR item.description ILIKE :search)',
-        { search: `%${filterDto.search}%` }
+        { search: `%${filterDto.search}%` },
       );
     }
 
     if (filterDto.categoryId) {
-      queryBuilder.andWhere('item.categoryId = :categoryId', { categoryId: filterDto.categoryId });
+      queryBuilder.andWhere('item.categoryId = :categoryId', {
+        categoryId: filterDto.categoryId,
+      });
     }
 
     if (filterDto.supplierId) {
-      queryBuilder.andWhere('item.supplierId = :supplierId', { supplierId: filterDto.supplierId });
+      queryBuilder.andWhere('item.supplierId = :supplierId', {
+        supplierId: filterDto.supplierId,
+      });
     }
 
     if (filterDto.lowStock) {
@@ -115,7 +239,7 @@ export class InventoryService {
   async findOne(id: string): Promise<InventoryItem> {
     const item = await this.inventoryRepository.findOne({
       where: { id, isActive: true },
-      relations: ['stockMovements', 'stockAlerts']
+      relations: ['stockMovements', 'stockAlerts'],
     });
 
     if (!item) {
@@ -125,18 +249,23 @@ export class InventoryService {
     return item;
   }
 
-  async update(id: string, updateInventoryItemDto: UpdateInventoryItemDto): Promise<InventoryItem> {
+  async update(
+    id: string,
+    updateInventoryItemDto: UpdateInventoryItemDto,
+  ): Promise<InventoryItem> {
     const item = await this.findOne(id);
-    
+
     // Check if SKU is being changed and if it already exists
 
     if (updateInventoryItemDto.sku && updateInventoryItemDto.sku !== item.sku) {
       const existingItem = await this.inventoryRepository.findOne({
-        where: { sku: updateInventoryItemDto.sku }
+        where: { sku: updateInventoryItemDto.sku },
       });
 
       if (existingItem) {
-        throw new BadRequestException(`Item with SKU ${updateInventoryItemDto.sku} already exists`);
+        throw new BadRequestException(
+          `Item with SKU ${updateInventoryItemDto.sku} already exists`,
+        );
       }
     }
 
@@ -150,9 +279,13 @@ export class InventoryService {
     await this.inventoryRepository.save(item);
   }
 
-  // Stock Management 
+  // Stock Management
 
-  async adjustStock(adjustmentDto: StockAdjustmentDto, userId: string, ipAddress?: string): Promise<InventoryItem> {
+  async adjustStock(
+    adjustmentDto: StockAdjustmentDto,
+    userId: string,
+    ipAddress?: string,
+  ): Promise<InventoryItem> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -160,17 +293,19 @@ export class InventoryService {
     try {
       const item = await queryRunner.manager.findOne(InventoryItem, {
         where: { id: adjustmentDto.inventoryItemId, isActive: true },
-        lock: { mode: 'pessimistic_write' }
+        lock: { mode: 'pessimistic_write' },
       });
 
       if (!item) {
-        throw new NotFoundException(`Inventory item with ID ${adjustmentDto.inventoryItemId} not found`);
+        throw new NotFoundException(
+          `Inventory item with ID ${adjustmentDto.inventoryItemId} not found`,
+        );
       }
 
       const previousStock = item.currentStock;
       let newStock: number;
 
-      // Calculate new stock 
+      // Calculate new stock
 
       switch (adjustmentDto.movementType) {
         case MovementType.RECEIPT:
@@ -184,7 +319,9 @@ export class InventoryService {
         case MovementType.TRANSFER_OUT:
           newStock = previousStock - Math.abs(adjustmentDto.quantity);
           if (newStock < 0) {
-            throw new BadRequestException('Insufficient stock for this operation');
+            throw new BadRequestException(
+              'Insufficient stock for this operation',
+            );
           }
           break;
         case MovementType.ADJUSTMENT:
@@ -210,32 +347,33 @@ export class InventoryService {
         referenceNumber: adjustmentDto.referenceNumber,
         notes: adjustmentDto.notes,
         userId,
-        ipAddress
+        ipAddress,
       });
 
       await queryRunner.manager.save(stockMovement);
 
       // Check and trigger alerts
-        if (adjustmentDto.movementType !== MovementType.ADJUSTMENT) {
-            await this.createStockMovement({
-              inventoryItemId: item.id,
-              movementType: adjustmentDto.movementType,
-              quantity: adjustmentDto.quantity,
-              previousStock,
-              newStock,
-              referenceNumber: adjustmentDto.referenceNumber ?? '', // Provide a default empty string if undefined
-              notes: adjustmentDto.notes ?? '', // Provide a default empty string if undefined
-              userId,
-              ipAddress
-            });
-        }
+      if (adjustmentDto.movementType !== MovementType.ADJUSTMENT) {
+        await this.createStockMovement({
+          inventoryItemId: item.id,
+          movementType: adjustmentDto.movementType,
+          quantity: adjustmentDto.quantity,
+          previousStock,
+          newStock,
+          referenceNumber: adjustmentDto.referenceNumber ?? '', // Provide a default empty string if undefined
+          notes: adjustmentDto.notes ?? '', // Provide a default empty string if undefined
+          userId,
+          ipAddress,
+        });
+      }
       await this.checkAndTriggerAlerts(item, queryRunner);
 
       await queryRunner.commitTransaction();
 
-      this.logger.log(`Stock adjusted for item ${item.sku}: ${previousStock} -> ${newStock}`);
+      this.logger.log(
+        `Stock adjusted for item ${item.sku}: ${previousStock} -> ${newStock}`,
+      );
       return item;
-
     } catch (error) {
       await queryRunner.rollbackTransaction();
       this.logger.error(`Error adjusting stock: ${error.message}`);
@@ -245,12 +383,16 @@ export class InventoryService {
     }
   }
 
-  async getCurrentStock(itemId: string): Promise<{ currentStock: number, availableStock: number, reservedStock: number }> {
+  async getCurrentStock(itemId: string): Promise<{
+    currentStock: number;
+    availableStock: number;
+    reservedStock: number;
+  }> {
     const item = await this.findOne(itemId);
     return {
       currentStock: item.currentStock,
       availableStock: item.availableStock,
-      reservedStock: item.reservedStock
+      reservedStock: item.reservedStock,
     };
   }
 
@@ -262,15 +404,19 @@ export class InventoryService {
     try {
       const item = await queryRunner.manager.findOne(InventoryItem, {
         where: { id: itemId, isActive: true },
-        lock: { mode: 'pessimistic_write' }
+        lock: { mode: 'pessimistic_write' },
       });
 
       if (!item) {
-        throw new NotFoundException(`Inventory item with ID ${itemId} not found`);
+        throw new NotFoundException(
+          `Inventory item with ID ${itemId} not found`,
+        );
       }
 
       if (item.availableStock < quantity) {
-        throw new BadRequestException('Insufficient available stock for reservation');
+        throw new BadRequestException(
+          'Insufficient available stock for reservation',
+        );
       }
 
       item.reservedStock += quantity;
@@ -293,11 +439,13 @@ export class InventoryService {
     try {
       const item = await queryRunner.manager.findOne(InventoryItem, {
         where: { id: itemId, isActive: true },
-        lock: { mode: 'pessimistic_write' }
+        lock: { mode: 'pessimistic_write' },
       });
 
       if (!item) {
-        throw new NotFoundException(`Inventory item with ID ${itemId} not found`);
+        throw new NotFoundException(
+          `Inventory item with ID ${itemId} not found`,
+        );
       }
 
       item.reservedStock = Math.max(0, item.reservedStock - quantity);
@@ -314,46 +462,55 @@ export class InventoryService {
 
   // Stock Movement History
 
-  async getStockMovements(filterDto: StockMovementFilterDto): Promise<StockMovement[]> {
-    const queryBuilder = this.stockMovementRepository.createQueryBuilder('movement')
+  async getStockMovements(
+    filterDto: StockMovementFilterDto,
+  ): Promise<StockMovement[]> {
+    const queryBuilder = this.stockMovementRepository
+      .createQueryBuilder('movement')
       .leftJoinAndSelect('movement.inventoryItem', 'item');
 
     if (filterDto.inventoryItemId) {
-      queryBuilder.where('movement.inventoryItemId = :inventoryItemId', { 
-        inventoryItemId: filterDto.inventoryItemId 
+      queryBuilder.where('movement.inventoryItemId = :inventoryItemId', {
+        inventoryItemId: filterDto.inventoryItemId,
       });
     }
 
     if (filterDto.movementType) {
-      queryBuilder.andWhere('movement.movementType = :movementType', { 
-        movementType: filterDto.movementType 
+      queryBuilder.andWhere('movement.movementType = :movementType', {
+        movementType: filterDto.movementType,
       });
     }
 
     if (filterDto.userId) {
-      queryBuilder.andWhere('movement.userId = :userId', { userId: filterDto.userId });
-    }
-
-    if (filterDto.startDate) {
-      queryBuilder.andWhere('movement.createdAt >= :startDate', { startDate: filterDto.startDate });
-    }
-
-    if (filterDto.endDate) {
-      queryBuilder.andWhere('movement.createdAt <= :endDate', { endDate: filterDto.endDate });
-    }
-
-    if (filterDto.referenceNumber) {
-      queryBuilder.andWhere('movement.referenceNumber ILIKE :referenceNumber', { 
-        referenceNumber: `%${filterDto.referenceNumber}%` 
+      queryBuilder.andWhere('movement.userId = :userId', {
+        userId: filterDto.userId,
       });
     }
 
-    return await queryBuilder
-      .orderBy('movement.createdAt', 'DESC')
-      .getMany();
+    if (filterDto.startDate) {
+      queryBuilder.andWhere('movement.createdAt >= :startDate', {
+        startDate: filterDto.startDate,
+      });
+    }
+
+    if (filterDto.endDate) {
+      queryBuilder.andWhere('movement.createdAt <= :endDate', {
+        endDate: filterDto.endDate,
+      });
+    }
+
+    if (filterDto.referenceNumber) {
+      queryBuilder.andWhere('movement.referenceNumber ILIKE :referenceNumber', {
+        referenceNumber: `%${filterDto.referenceNumber}%`,
+      });
+    }
+
+    return await queryBuilder.orderBy('movement.createdAt', 'DESC').getMany();
   }
 
-  private async createStockMovement(data: Partial<StockMovement>): Promise<StockMovement> {
+  private async createStockMovement(
+    data: Partial<StockMovement>,
+  ): Promise<StockMovement> {
     const movement = this.stockMovementRepository.create(data);
     return await this.stockMovementRepository.save(movement);
   }
@@ -367,18 +524,20 @@ export class InventoryService {
 
   async getActiveAlerts(): Promise<StockAlert[]> {
     return await this.stockAlertRepository.find({
-      where: { 
+      where: {
         isActive: true,
-        status: AlertStatus.ACTIVE
+        status: AlertStatus.ACTIVE,
       },
       relations: ['inventoryItem'],
-      order: { createdAt: 'DESC' }
+      order: { createdAt: 'DESC' },
     });
   }
 
   async acknowledgeAlert(alertId: string, userId: string): Promise<StockAlert> {
-    const alert = await this.stockAlertRepository.findOne({ where: { id: alertId } });
-    
+    const alert = await this.stockAlertRepository.findOne({
+      where: { id: alertId },
+    });
+
     if (!alert) {
       throw new NotFoundException(`Alert with ID ${alertId} not found`);
     }
@@ -390,15 +549,18 @@ export class InventoryService {
     return await this.stockAlertRepository.save(alert);
   }
 
-  private async checkAndTriggerAlerts(item: InventoryItem, queryRunner: QueryRunner): Promise<void> {
+  private async checkAndTriggerAlerts(
+    item: InventoryItem,
+    queryRunner: QueryRunner,
+  ): Promise<void> {
     // Check for low stock alert
     if (item.reorderPoint && item.currentStock <= item.reorderPoint) {
       const existingAlert = await queryRunner.manager.findOne(StockAlert, {
         where: {
           inventoryItemId: item.id,
           alertType: AlertType.LOW_STOCK,
-          status: AlertStatus.ACTIVE
-        }
+          status: AlertStatus.ACTIVE,
+        },
       });
 
       if (!existingAlert) {
@@ -406,7 +568,7 @@ export class InventoryService {
           inventoryItemId: item.id,
           alertType: AlertType.LOW_STOCK,
           thresholdValue: item.reorderPoint,
-          lastTriggered: new Date()
+          lastTriggered: new Date(),
         });
 
         await queryRunner.manager.save(alert);
@@ -421,8 +583,8 @@ export class InventoryService {
         where: {
           inventoryItemId: item.id,
           alertType: AlertType.OUT_OF_STOCK,
-          status: AlertStatus.ACTIVE
-        }
+          status: AlertStatus.ACTIVE,
+        },
       });
 
       if (!existingAlert) {
@@ -430,7 +592,7 @@ export class InventoryService {
           inventoryItemId: item.id,
           alertType: AlertType.OUT_OF_STOCK,
           thresholdValue: 0,
-          lastTriggered: new Date()
+          lastTriggered: new Date(),
         });
 
         await queryRunner.manager.save(alert);
@@ -452,14 +614,18 @@ export class InventoryService {
   }
 
   // Inventory Valuation
-  
-  async getInventoryValuation(): Promise<{ totalValue: number, totalItems: number, itemsCount: number }> {
+
+  async getInventoryValuation(): Promise<{
+    totalValue: number;
+    totalItems: number;
+    itemsCount: number;
+  }> {
     const result = await this.inventoryRepository
       .createQueryBuilder('item')
       .select([
         'SUM(item.currentStock * item.unitCost) as totalValue',
         'SUM(item.currentStock) as totalItems',
-        'COUNT(*) as itemsCount'
+        'COUNT(*) as itemsCount',
       ])
       .where('item.isActive = :isActive', { isActive: true })
       .andWhere('item.unitCost IS NOT NULL')
@@ -468,7 +634,7 @@ export class InventoryService {
     return {
       totalValue: parseFloat(result.totalValue) || 0,
       totalItems: parseInt(result.totalItems) || 0,
-      itemsCount: parseInt(result.itemsCount) || 0
+      itemsCount: parseInt(result.itemsCount) || 0,
     };
   }
 }

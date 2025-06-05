@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Veterinarian } from './veterinarian.entity';
 
 export enum DayOfWeek {
@@ -8,42 +14,48 @@ export enum DayOfWeek {
   THURSDAY = 'thursday',
   FRIDAY = 'friday',
   SATURDAY = 'saturday',
-  SUNDAY = 'sunday'
+  SUNDAY = 'sunday',
 }
 
 @Entity('availability_schedules')
 export class AvailabilitySchedule {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ type: 'enum', enum: DayOfWeek })
-  dayOfWeek: DayOfWeek;
+  dayOfWeek!: DayOfWeek;
 
   @Column({ type: 'time' })
-  startTime: string;
+  startTime!: string;
 
   @Column({ type: 'time' })
-  endTime: string;
+  endTime!: string;
 
   @Column({ default: true })
-  isActive: boolean;
+  isActive!: boolean;
 
   @Column({ type: 'date', nullable: true })
-  effectiveFrom: Date;
+  effectiveFrom!: Date;
 
   @Column({ type: 'date', nullable: true })
-  effectiveTo: Date;
+  effectiveTo!: Date;
 
-  @ManyToOne(() => Veterinarian, (vet) => vet.availabilitySchedules, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Veterinarian, vet => vet.availabilitySchedules, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'veterinarianId' })
-  veterinarian: Veterinarian;
+  veterinarian!: Veterinarian;
 
   @Column()
-  veterinarianId: number;
+  veterinarianId!: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date;
+  createdAt!: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
-  updatedAt: Date;
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
+  updatedAt!: Date;
 }

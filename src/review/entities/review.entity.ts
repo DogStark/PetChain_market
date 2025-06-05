@@ -1,6 +1,11 @@
 import { User } from '@/user/entities/user.entity';
 import {
-  Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
 import { ReviewResponse } from './response-review.dto';
@@ -20,7 +25,7 @@ export class Review {
   helpfulVotes!: number;
 
   @Column({ nullable: true })
-  productId?: number;  
+  productId?: number;
 
   @Column({ nullable: true })
   serviceId?: number;
@@ -28,13 +33,14 @@ export class Review {
   @Column('text')
   content!: string;
 
-
-  @ManyToOne(() => User, (user) => user.reviews, { eager: true })
+  @ManyToOne(() => User, user => user.reviews)
   user!: User;
 
-  @OneToMany(() => ReviewResponse, (response) => response.review, { cascade: true })
+  @OneToMany(() => ReviewResponse, response => response.review, {
+    cascade: true,
+  })
   responses!: ReviewResponse[];
-  
+
   @CreateDateColumn()
   createdAt!: Date;
 

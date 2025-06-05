@@ -24,7 +24,13 @@
     "backup:cleanup": "node dist/backup/scripts/cleanup-backups.js",
     "backup:monitor": "node dist/backup/scripts/backup-monitor.js",
     "recovery:test": "node dist/backup/scripts/test-recovery.js",
-    "recovery:restore": "node dist/backup/scripts/restore-backup.js"
+    "recovery:restore": "node dist/backup/scripts/restore-backup.js",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli",
+    "migration:generate": "npm run typeorm -- migration:generate -d ./src/data-source.ts src/migrations/InitialMigration",
+    "migration-test:generate": "cross-env NODE_ENV=test npm run typeorm -- migration:generate -d ./src/data-source.ts src/migrations/test/InitialTestMigration",
+    "migration:run": "npm run typeorm -- migration:run -d ./src/data-source.ts",
+    "migration-test:run": "cross-env NODE_ENV=test npm run typeorm -- migration:run -d ./src/data-source.ts",
+    "migration:revert": "npm run typeorm migration:revert"
   },
   "dependencies": {
     "@nestjs/axios": "^4.0.0",
@@ -89,6 +95,7 @@
     "@types/node": "^22.15.29",
     "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^6.0.2",
+    "cross-env": "^7.0.3",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
