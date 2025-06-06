@@ -3,15 +3,14 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class AuditLog {
   @PrimaryGeneratedColumn('uuid')
-     id!: string;
+  id!: string;
 
   @Column()
-     user!: string;
+  user!: string;
 
   @Column()
-     action!: string;
+  action!: string;
 
   @Column({ type: 'timestamp' })
-     timestamp!: Date;
+  timestamp!: Date;
 }
-

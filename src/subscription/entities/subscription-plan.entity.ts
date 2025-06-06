@@ -5,35 +5,35 @@ import { BillingCycle } from '../../shared/common/enums/billing-cycle.enum';
 @Entity()
 export class SubscriptionPlan {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column('text')
-  description: string;
+  description!: string;
 
   @Column('decimal', { precision: 10, scale: 2 })
-  price: number;
+  price!: number;
 
   @Column({ type: 'enum', enum: BillingCycle })
-  billingCycle: BillingCycle;
+  billingCycle!: BillingCycle;
 
   @Column()
-  deliveryFrequency: string;
+  deliveryFrequency!: string;
 
   @Column({ default: true })
-  isActive: boolean;
+  isActive!: boolean;
 
   @Column('simple-array')
-  productIds: string[];
+  productIds!: string[];
 
   @Column({ type: 'json', nullable: true })
-  features: Record<string, any>;
+  features!: Record<string, any>;
 
   @OneToMany(() => Subscription, subscription => subscription.plan)
-  subscriptions: Subscription[];
+  subscriptions!: Subscription[];
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date;
+  createdAt!: Date;
 }

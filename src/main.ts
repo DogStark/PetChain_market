@@ -22,7 +22,11 @@ async function bootstrap(): Promise<void> {
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
-          styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+          styleSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            'https://fonts.googleapis.com',
+          ],
           fontSrc: ["'self'", 'https://fonts.gstatic.com'],
           imgSrc: ["'self'", 'data:', 'https:'],
           scriptSrc: ["'self'"],
@@ -100,7 +104,11 @@ async function bootstrap(): Promise<void> {
         'http://localhost:3000',
         'http://localhost:3001',
       ];
-      if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development') {
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        process.env.NODE_ENV === 'development'
+      ) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));
@@ -136,7 +144,9 @@ async function bootstrap(): Promise<void> {
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
     res.setHeader('ETag', true);
 
-    if (res.getHeader('content-type')?.toString().includes('application/json')) {
+    if (
+      res.getHeader('content-type')?.toString().includes('application/json')
+    ) {
       res.setHeader('Cache-Control', 'private, max-age=300');
     } else {
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');

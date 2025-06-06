@@ -1,6 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
 import { InsuranceProvider } from './insurance-provider.entity';
-import { Pet } from '../../pets/pet.entity';
+import { Pet } from '../../customer-pet/entities/pet.entity';
 import { InsuranceClaim } from './insurance-claim.entity';
 
 @Entity('insurance_policies')
@@ -35,13 +42,21 @@ export class InsurancePolicy {
   @Column({ type: 'date' })
   expirationDate: Date;
 
-  @Column({ type: 'enum', enum: ['active', 'suspended', 'cancelled', 'expired'], default: 'active' })
+  @Column({
+    type: 'enum',
+    enum: ['active', 'suspended', 'cancelled', 'expired'],
+    default: 'active',
+  })
   status: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   updatedAt: Date;
 
   @ManyToOne(() => InsuranceProvider, provider => provider.policies)

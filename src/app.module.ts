@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './config/typeorm.config';
-import { InsuranceModule } from './insurance/insurance.module'; 
+import { InsuranceModule } from './insurance/insurance.module';
 import { AuthModule } from './auth/auth.module';
 import { PetModule } from './pet/pet.module';
 import { MedicalRecordModule } from './pets/medical_record.module';
@@ -26,30 +27,36 @@ import { PricingModule } from './pricing/pricing.module';
 import { NotificationModule } from './notification/notification.module';
 import { OrderModule } from './order/order.module';
 import { PetModule as PetsModule } from './pets/pet.module';
-import { MedicalRecordModule as PetsMedicalRecordModule } from './medical_record/medical_record.module';
+import { MedicalModule as PetsMedicalRecordModule } from './medical/medical.module';
 import { AdminModule } from './admin/admin.module';
 import { GroomingModule } from './grooming/grooming.module';
-
+import { SchedulingModule } from './scheduling/scheduling.module';
+import { UserModule } from './user/user.module';
 import { HealthModule } from './health/health.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { LoggerModule } from './logger/logger.module';
 import { SentryModule } from './sentry/sentry.module';
-
 import { SubscriptionModule } from './subscription/subscription.module';
 import { PaymentModule } from './payment/payment.module';
+import { LocationModule } from './location/location.module';
+import { AppointmentModule } from './appointment/appointment.module';
 import { VaccinationModule } from './vaccination/vaccination.module';
 
 
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      envFilePath: ['.env.test', '.env'], // Loads .env.test first if running tests
+      isGlobal: true,
+      load: [databaseConfig, jwtConfig],
+    }),
     TypeOrmModule.forRoot(typeOrmConfig),
     ThrottlerModule.forRoot({
       throttlers: [{ ttl: 60000, limit: 10 }],
     }),
-
-    UserModule,
     AuthModule,
+    UserModule,
     PetModule,
     MedicalRecordModule,
     ShoppingCartModule,
@@ -71,14 +78,17 @@ import { VaccinationModule } from './vaccination/vaccination.module';
     PetsMedicalRecordModule,
     AdminModule,
     GroomingModule,
+    SchedulingModule,
     SubscriptionModule,
     PaymentModule,
     LoggerModule,
     MetricsModule,
     HealthModule,
     SentryModule,
-    InsuranceModule, 
+
+    InsuranceModule,
     PrescriptionModule,
+
     VaccinationModule,
   ],
   controllers: [AppController],

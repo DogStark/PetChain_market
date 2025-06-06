@@ -1,6 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+  ManyToOne,
+} from 'typeorm';
 import { OrderItem } from './order-item.entity';
-import { User } from './user.entity';
+import { User } from '../../user/entities/user.entity';
 
 export enum OrderStatus {
   PENDING = 'pending',
@@ -9,7 +17,7 @@ export enum OrderStatus {
   SHIPPED = 'shipped',
   DELIVERED = 'delivered',
   CANCELLED = 'cancelled',
-  REFUNDED = 'refunded'
+  REFUNDED = 'refunded',
 }
 
 @Entity('orders')

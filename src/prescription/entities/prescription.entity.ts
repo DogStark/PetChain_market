@@ -1,4 +1,4 @@
-import { Pet } from '@/pet/entities/pet.entity';
+import { Pet } from '../../customer-pet/entities/pet.entity';
 import { User } from '@/user/entities/user.entity';
 import {
   Entity,
@@ -44,10 +44,10 @@ export class Prescription {
   @Column({ default: 0 })
   refillsUsed: number;
 
-  @Column({ 
-    type: 'enum', 
-    enum: PrescriptionStatus, 
-    default: PrescriptionStatus.PENDING 
+  @Column({
+    type: 'enum',
+    enum: PrescriptionStatus,
+    default: PrescriptionStatus.PENDING,
   })
   status: PrescriptionStatus;
 

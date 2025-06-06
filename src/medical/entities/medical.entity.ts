@@ -1,4 +1,4 @@
-import { Pet } from '@/pet/entities/pet.entity';
+import { Pet } from '../../customer-pet/entities/pet.entity';
 import { User } from '@/user/entities/user.entity';
 import {
   Entity,

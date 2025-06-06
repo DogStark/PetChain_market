@@ -7,9 +7,11 @@ import {
   DeleteDateColumn,
   Unique,
   OneToMany,
+  ManyToMany,
 } from 'typeorm';
 import { UserRole } from '../../common/enums/roles.enum';
-import { Review } from '@/review/entities/review.entity';
+import { Review } from '../../review/entities/review.entity';
+import { Pet } from '../../customer-pet/entities/pet.entity';
 
 @Entity('users')
 @Unique(['email'])
@@ -27,6 +29,12 @@ export class User {
   })
   role!: UserRole;
 
+  @OneToMany(() => Pet, pet => pet.owner)
+  ownedPets: Pet[];
+
+  @ManyToMany(() => Pet, pet => pet.familyMembers)
+  sharedPets: Pet[];
+
   @Column({ type: 'boolean', default: false })
   isVerified!: boolean;
 
@@ -39,8 +47,8 @@ export class User {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt!: Date;
 
-  @OneToMany(() => Review, (review) => review.user, { eager: true })
-  reviews!: User;
+  @OneToMany(() => Review, review => review.user, { eager: true })
+  reviews!: Review[];
 
   @DeleteDateColumn({ type: 'timestamp', nullable: true })
   deletedAt?: Date;
