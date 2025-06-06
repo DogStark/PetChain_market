@@ -40,6 +40,9 @@ import { SubscriptionModule } from './subscription/subscription.module';
 import { PaymentModule } from './payment/payment.module';
 import { LocationModule } from './location/location.module';
 import { AppointmentModule } from './appointment/appointment.module';
+import { VaccinationModule } from './vaccination/vaccination.module';
+
+
 
 @Module({
   imports: [
@@ -86,6 +89,7 @@ import { AppointmentModule } from './appointment/appointment.module';
     InsuranceModule,
     PrescriptionModule,
 
+    VaccinationModule,
   ],
   controllers: [AppController],
   providers: [

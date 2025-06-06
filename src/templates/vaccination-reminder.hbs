@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Vaccination Reminder</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #4CAF50; color: white; padding: 20px; text-align: center; }
+        .content { padding: 20px; background-color: #f9f9f9; }
+        .footer { text-align: center; padding: 10px; font-size: 12px; color: #666; }
+        .highlight { background-color: #ffeb3b; padding: 5px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐾 Vaccination Reminder</h1>
+        </div>
+        <div class="content">
+            <h2>Hello!</h2>
+            <p>This is a friendly reminder that <strong>{{petName}}</strong> has an upcoming vaccination appointment.</p>
+            
+            <div class="highlight">
+                <h3>Vaccination Details:</h3>
+                <ul>
+                    <li><strong>Pet:</strong> {{petName}}</li>
+                    <li><strong>Vaccine:</strong> {{vaccineName}}</li>
+                    <li><strong>Scheduled Date:</strong> {{scheduledDate}}</li>
+                    <li><strong>Days Until Due:</strong> {{daysUntilDue}}</li>
+                </ul>
+            </div>
+            
+            <p>Please make sure to schedule an appointment with your veterinarian if you haven't already.</p>
+            <p>Keeping your pet's vaccinations up to date is crucial for their health and wellbeing.</p>
+        </div>
+        <div class="footer">
+            <p>This is an automated reminder from your Pet Care System.</p>
+        </div>
+    </div>
+</body>
+</html>
