@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>OVERDUE: Vaccination Alert</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #f44336; color: white; padding: 20px; text-align: center; }
+        .content { padding: 20px; background-color: #fff3cd; border: 1px solid #ffeaa7; }
+        .footer { text-align: center; padding: 10px; font-size: 12px; color: #666; }
+        .alert { background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 5px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚠️ OVERDUE VACCINATION ALERT</h1>
+        </div>
+        <div class="content">
+            <div class="alert">
+                <h2>URGENT: Vaccination Overdue</h2>
+                <p><strong>{{petName}}</strong> has an overdue vaccination that requires immediate attention.</p>
+            </div>
+            
+            <h3>Overdue Vaccination Details:</h3>
+            <ul>
+                <li><strong>Pet:</strong> {{petName}}</li>
+                <li><strong>Vaccine:</strong> {{vaccineName}}</li>
+                <li><strong>Originally Scheduled:</strong> {{scheduledDate}}</li>
+                <li><strong>Days Overdue:</strong> {{daysOverdue}}</li>
+            </ul>
+            
+            <p><strong>Please contact your veterinarian immediately to schedule this vaccination.</strong></p>
+            <p>Overdue vaccinations can put your pet's health at risk and may affect their ability to:</p>
+            <ul>
+                <li>Board at facilities</li>
+                <li>Attend grooming appointments</li>
+                <li>Participate in training classes</li>
+                <li>Visit dog parks or public spaces</li>
+            </ul>
+        </div>
+        <div class="footer">
+            <p>This is an automated alert from your Pet Care System.</p>
+        </div>
+    </div>
+</body>
+</html>

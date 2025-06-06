@@ -37,6 +37,8 @@ import { SentryModule } from './sentry/sentry.module';
 
 import { SubscriptionModule } from './subscription/subscription.module';
 import { PaymentModule } from './payment/payment.module';
+import { VaccinationModule } from './vaccination/vaccination.module';
+
 
 
 @Module({
@@ -77,6 +79,7 @@ import { PaymentModule } from './payment/payment.module';
     SentryModule,
     InsuranceModule, 
     PrescriptionModule,
+    VaccinationModule,
   ],
   controllers: [AppController],
   providers: [

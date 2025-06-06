@@ -1,0 +1,90 @@
+[
+  {
+    "name": "Standard Dog Vaccination Schedule",
+    "species": "dog",
+    "description": "Standard vaccination schedule for puppies and adult dogs",
+    "vaccinations": [
+      {
+        "vaccineName": "DHPP",
+        "vaccineType": "Core",
+        "ageInWeeks": 6,
+        "intervalWeeks": 3,
+        "boosterRequired": true,
+        "isMandatory": true
+      },
+      {
+        "vaccineName": "DHPP Booster 1",
+        "vaccineType": "Core",
+        "ageInWeeks": 9,
+        "boosterRequired": true,
+        "isMandatory": true
+      },
+      {
+        "vaccineName": "DHPP Booster 2",
+        "vaccineType": "Core",
+        "ageInWeeks": 12,
+        "boosterRequired": true,
+        "isMandatory": true
+      },
+      {
+        "vaccineName": "Rabies",
+        "vaccineType": "Core",
+        "ageInWeeks": 16,
+        "boosterRequired": true,
+        "isMandatory": true
+      },
+      {
+        "vaccineName": "Bordetella",
+        "vaccineType": "Non-Core",
+        "ageInWeeks": 8,
+        "intervalWeeks": 52,
+        "boosterRequired": true,
+        "isMandatory": false
+      }
+    ]
+  },
+  {
+    "name": "Standard Cat Vaccination Schedule",
+    "species": "cat",
+    "description": "Standard vaccination schedule for kittens and adult cats",
+    "vaccinations": [
+      {
+        "vaccineName": "FVRCP",
+        "vaccineType": "Core",
+        "ageInWeeks": 6,
+        "intervalWeeks": 3,
+        "boosterRequired": true,
+        "isMandatory": true
+      },
+      {
+        "vaccineName": "FVRCP Booster 1",
+        "vaccineType": "Core",
+        "ageInWeeks": 9,
+        "boosterRequired": true,
+        "isMandatory": true
+      },
+      {
+        "vaccineName": "FVRCP Booster 2",
+        "vaccineType": "Core",
+        "ageInWeeks": 12,
+        "boosterRequired": true,
+        "isMandatory": true
+      },
+      {
+        "vaccineName": "Rabies",
+        "vaccineType": "Core",
+        "ageInWeeks": 16,
+        "boosterRequired": true,
+        "isMandatory": true
+      },
+      {
+        "vaccineName": "FeLV",
+        "vaccineType": "Non-Core",
+        "ageInWeeks": 12,
+        "intervalWeeks": 52,
+        "boosterRequired": true,
+        "isMandatory": false
+      }
+    ]
+  }
+]

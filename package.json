@@ -38,6 +38,7 @@
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/schedule": "^6.0.0",
     "@nestjs/swagger": "^11.2.0",
+    "@nestjs-modules/mailer": "^1.9.1",
     "@nestjs/terminus": "^11.0.0",
     "@nestjs/throttler": "^6.4.0",
     "@nestjs/typeorm": "^11.0.0",
@@ -71,6 +72,10 @@
     "winston": "^3.17.0",
     "winston-daily-rotate-file": "^5.0.0",
     "winston-logstash": "^1.2.1"
+    "pdfkit": "^0.13.0",
+    "handlebars": "^4.7.8",
+    "nodemailer": "^6.9.4"
+
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
@@ -89,6 +94,8 @@
     "@types/node": "^22.15.29",
     "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^6.0.2",
+    "@types/pdfkit": "^0.12.9",
+    "@types/nodemailer": "^6.4.9",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
