@@ -41,6 +41,7 @@ import { PaymentModule } from './payment/payment.module';
 import { LocationModule } from './location/location.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { VaccinationModule } from './vaccination/vaccination.module';
+import { ReViewModule } from './re-view/re-view.module';
 
 
 
@@ -90,6 +91,8 @@ import { VaccinationModule } from './vaccination/vaccination.module';
     PrescriptionModule,
 
     VaccinationModule,
+
+    ReViewModule,
   ],
   controllers: [AppController],
   providers: [
